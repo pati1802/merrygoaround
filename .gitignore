@@ -1,0 +1,6 @@
+# simple git ignore file
+# add files which shouldn't be stashed
+
+*.swp
+*.o
+*.out
