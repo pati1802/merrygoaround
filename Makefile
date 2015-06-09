@@ -1,5 +1,5 @@
 CC = g++
-OBJ = Main.o
+OBJ = Main.o GraphicObject.o ObjLoader.o
 CFLAGS = -std=c99 -Wall -Werror
 LDLIBS = -lm -lglut -lGLEW -lGL
 

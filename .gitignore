@@ -4,3 +4,5 @@
 *.swp
 *.o
 *.out
+
+glm/
