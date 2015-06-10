@@ -9,7 +9,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "GraphicObject.h"
+#include "GraphicObject.hpp"
 
 using namespace std;
 
