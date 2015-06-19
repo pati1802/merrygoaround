@@ -5,5 +5,5 @@
 *.o
 *.out
 
-glm/
-obj/
+#glm/
+#obj/
