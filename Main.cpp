@@ -15,17 +15,27 @@ using namespace std;
 
 bool debug = true;
 
+vector<GraphicObject> gObjects;
+
 int initialize() {
 	if(debug) cout << "initializing ..." << endl;
 
 	glClearColor(0.0, 0.0, 0.0, 0.0); // set color to black (RGBA)
 	
+	if(debug) cout << "cleared color space" << endl;
+	
 	/* enable and use depth functions */
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+	if(debug) cout << "enabled depth functions\nstart loading obj..." << endl;
+
 	// TODO : initialize grafical objects here
 	// TODO : setup data buffers of all grafical objects
+	GraphicObject *tmp = new GraphicObject("obj/cube.obj");
+	gObjects.push_back(*tmp);
+
+	if(debug) cout << "done loading obj" << endl;
 
 	//createShaderProgram();
 	if(debug) cout << "initializing done" << endl;
@@ -44,6 +54,10 @@ void onDisplay() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// TODO : draw graphical objects here
+
+	for(GraphicObject obj : gObjects) {
+		obj.draw();
+	}
 
 	/* swap forground and background buffers */
 	glutSwapBuffers();

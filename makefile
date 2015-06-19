@@ -4,7 +4,7 @@ CFILES = Main.cpp GraphicObject.cpp ObjLoader.cpp
 CFLAGS =-std=c++11 -Wall -Werror
 LFLAGS =-lm -lglut -lGLEW -lGL
 
-main.out:
+main.out: clean
 	g++ -std=c++11 $(CFILES) -o main.out -lm -lglut -lGLEW -lGL
 
 clean:

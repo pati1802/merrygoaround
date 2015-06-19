@@ -25,11 +25,10 @@ GraphicObject::GraphicObject(std::string file) {
  */
 GraphicObject::GraphicObject(const GraphicObject& obj) {
 	// TODO : test if this works
-	for(glm::vec3 vertex : obj.vertices) {
-		glm::vec3 *tmp = new glm::vec3;;
-		tmp = &vertex;
-		vertices.push_back(*tmp);
-	}
+	std::copy(obj.vertices.begin(), obj.vertices.end(),
+		this->vertices.begin());
+	std::copy(obj.uvs.begin(), obj.uvs.end(), this->uvs.begin());
+	std::copy(obj.normals.begin(), obj.normals.end(), this->normals.begin());
 }
 
 /**
@@ -37,3 +36,10 @@ GraphicObject::GraphicObject(const GraphicObject& obj) {
  */
 GraphicObject::~GraphicObject() {}
 
+/**
+ * used to draw the graphical object on the screen
+ */
+void GraphicObject::draw() {
+	//glEnableVertexAttribArray();
+	// TODO : add drawing code
+}

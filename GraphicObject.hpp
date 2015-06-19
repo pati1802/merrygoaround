@@ -27,6 +27,9 @@ class GraphicObject {
 		GraphicObject(const GraphicObject& obj);
 		/* default destructor */
 		virtual ~GraphicObject();
+
+		/* functions to draw the grafical object */
+		void draw();
 };
 
 #endif

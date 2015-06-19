@@ -18,12 +18,13 @@
 // - Loading from memory, stream, etc
 
 bool loadOBJ(
-        const char * path, 
+        std::string path, 
         std::vector<glm::vec3> & out_vertices, 
         std::vector<glm::vec2> & out_uvs,
         std::vector<glm::vec3> & out_normals
 ){
-        printf("Loading OBJ file %s...\n", path);
+		const char *myfile = path.c_str();
+        printf("Loading OBJ file %s...\n", myfile);
 
         std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
         std::vector<glm::vec3> temp_vertices; 
@@ -31,7 +32,7 @@ bool loadOBJ(
         std::vector<glm::vec3> temp_normals;
 
 
-        FILE * file = fopen(path, "r");
+        FILE * file = fopen(myfile, "r");
         if( file == NULL ){
                 printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
                 getchar();
@@ -85,7 +86,6 @@ bool loadOBJ(
                 }
 
         }
-
         // For each vertex of each triangle
         for( unsigned int i=0; i<vertexIndices.size(); i++ ){
 
@@ -118,13 +118,13 @@ bool loadOBJ(
 #include <assimp/postprocess.h>     // Post processing flags
 
 bool loadAssImp(
-        const char * path, 
+        std::string input, 
         std::vector<unsigned short> & indices,
         std::vector<glm::vec3> & vertices,
         std::vector<glm::vec2> & uvs,
         std::vector<glm::vec3> & normals
 ){
-
+		const char *path = input.c_str();
         Assimp::Importer importer;
 
         const aiScene* scene = importer.ReadFile(path, 0/*aiProcess_JoinIdenticalVertices | aiProcess_SortByPType*/);
