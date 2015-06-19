@@ -55,9 +55,12 @@ void onDisplay() {
 	
 	// TODO : draw graphical objects here
 
-	for(GraphicObject obj : gObjects) {
-		obj.draw();
+	for(int i = 0; i < gObjects.size(); i++) {
+		gObjects.at(i).draw();
 	}
+	/*for(GraphicObject obj : gObjects) {
+		obj.draw();
+	}*/
 
 	/* swap forground and background buffers */
 	glutSwapBuffers();
