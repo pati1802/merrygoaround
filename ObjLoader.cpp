@@ -1,3 +1,10 @@
+/****************************************************************************
+ *	Code for object loading used from:
+ *		http://www.opengl-tutorial.org/beginners-tutorials/
+ *
+ *	minor tweak to use string instead of const char
+ ***************************************************************************/
+
 #include <vector>
 #include <stdio.h>
 #include <string>
@@ -31,16 +38,16 @@ bool loadOBJ(
         std::vector<glm::vec2> temp_uvs;
         std::vector<glm::vec3> temp_normals;
 
-
+		if(DEBUG) printf("ObjectLoader | opening file ...\n");
         FILE * file = fopen(myfile, "r");
         if( file == NULL ){
                 printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
                 getchar();
                 return false;
         }
-
+		if(DEBUG) printf("ObjectLoader | opened file successfully\n");
         while( 1 ){
-
+				if(DEBUG) printf("ObjectLoader | reading lines ...\n");
                 char lineHeader[128];
                 // read the first word of the line
                 int res = fscanf(file, "%s", lineHeader);
@@ -50,19 +57,27 @@ bool loadOBJ(
                 // else : parse lineHeader
                 
                 if ( strcmp( lineHeader, "v" ) == 0 ){
+						if(DEBUG)
+							printf("ObjectLoader | parsing vertex ...\n");
                         glm::vec3 vertex;
                         fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
                         temp_vertices.push_back(vertex);
                 }else if ( strcmp( lineHeader, "vt" ) == 0 ){
+						if(DEBUG)
+							printf("ObjectLoader | parsing vertex texutre ...\n");
                         glm::vec2 uv;
                         fscanf(file, "%f %f\n", &uv.x, &uv.y );
                         uv.y = -uv.y; // Invert V coordinate since we will only use DDS texture, which are inverted. Remove if you want to use TGA or BMP loaders.
                         temp_uvs.push_back(uv);
                 }else if ( strcmp( lineHeader, "vn" ) == 0 ){
+						if(DEBUG)
+							printf("ObjectLoader | parsing vertex normal ...\n");
                         glm::vec3 normal;
                         fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
                         temp_normals.push_back(normal);
                 }else if ( strcmp( lineHeader, "f" ) == 0 ){
+						if(DEBUG)
+							printf("ObjectLoader | parsing face ...\n");
                         std::string vertex1, vertex2, vertex3;
                         unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
                         int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
@@ -80,15 +95,18 @@ bool loadOBJ(
                         normalIndices.push_back(normalIndex[1]);
                         normalIndices.push_back(normalIndex[2]);
                 }else{
+						if(DEBUG)
+							printf("ObjectLoader | ignoring comment ...\n");
                         // Probably a comment, eat up the rest of the line
                         char stupidBuffer[1000];
                         fgets(stupidBuffer, 1000, file);
                 }
 
         }
+		if(DEBUG) printf("ObjectLoader | parsed object successfully\n");
         // For each vertex of each triangle
         for( unsigned int i=0; i<vertexIndices.size(); i++ ){
-
+				if(DEBUG) printf("ObjectLoader | adding data to buffers\n");
                 // Get the indices of its attributes
                 unsigned int vertexIndex = vertexIndices[i];
                 unsigned int uvIndex = uvIndices[i];
@@ -105,6 +123,9 @@ bool loadOBJ(
                 out_normals .push_back(normal);
         
         }
+		
+		if(DEBUG)
+			printf("ObjectLoader | finished reading object successfully\n");
 
         return true;
 }

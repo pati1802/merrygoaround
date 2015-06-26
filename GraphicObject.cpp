@@ -9,6 +9,7 @@ GraphicObject::GraphicObject(std::string file) {
 		std::cerr << "Coudln't load object!" << std::endl;
 		return;
 	}
+
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3),
@@ -42,4 +43,31 @@ GraphicObject::~GraphicObject() {}
 void GraphicObject::draw() {
 	//glEnableVertexAttribArray();
 	// TODO : add drawing code
+
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+	glVertexAttribPointer(
+		0,			// attribute
+		3,			// size
+		GL_FLOAT,	// type
+		GL_FALSE,	// normalized?
+		0,			// stride
+		(void*) 0	// array buffer offset
+	);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, this->uvBuffer);
+	glVertexAttribPointer(
+		1,			// attribute
+		2,			// size
+		GL_FLOAT,	// type
+		GL_FALSE,	// normalized
+		0,			// stride
+		(void*) 0	// array buffer offset
+	);
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }

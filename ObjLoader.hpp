@@ -1,7 +1,17 @@
+/****************************************************************************
+ *	Code for object loading used from:
+ *		http://www.opengl-tutorial.org/beginners-tutorials/
+ *
+ ***************************************************************************/
+
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
 #include <cstring>
+
+#ifndef DEBUG
+#define DEBUG true
+#endif
 
 bool loadOBJ(
         std::string path, 

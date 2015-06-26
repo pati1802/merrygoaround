@@ -9,36 +9,69 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "GraphicObject.hpp"
+#include "Shader.hpp"
+
+#ifndef DEBUG
+#define DEBUG true
+#endif
 
 using namespace std;
 
-bool debug = true;
+/**
+ * Global Variables
+ */
+vector<GraphicObject*> gObjects;
 
-vector<GraphicObject> gObjects;
+GLuint programID;
+GLuint MatrixID;
 
+glm::mat4 ProjectionMatrix;
+glm::mat4 ViewMatrix;
+glm::mat4 ModelMatrix;
+
+/**
+ * Function to initialize the open gl program
+ */
 int initialize() {
-	if(debug) cout << "initializing ..." << endl;
+	if(DEBUG) cout << "Main | initializing ..." << endl;
 
+	if(DEBUG) cout << "Main | clearing color space ... ";
 	glClearColor(0.0, 0.0, 0.0, 0.0); // set color to black (RGBA)
-	
-	if(debug) cout << "cleared color space" << endl;
+	if(DEBUG) cout << "done" << endl;
 	
 	/* enable and use depth functions */
+	if(DEBUG) cout << "Main | enabling depth functions ... ";
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	if(DEBUG) cout << "done" << endl;
 
-	if(debug) cout << "enabled depth functions\nstart loading obj..." << endl;
-
-	// TODO : initialize grafical objects here
-	// TODO : setup data buffers of all grafical objects
-	GraphicObject *tmp = new GraphicObject("obj/cube.obj");
-	gObjects.push_back(*tmp);
-
-	if(debug) cout << "done loading obj" << endl;
+	/* loading objects from .obj files to program */
+	if(DEBUG) cout << "Main | start loading objects ... ";
+	gObjects.push_back(new GraphicObject("obj/cube.obj"));
+	if(DEBUG) cout << "Main | done loading objects" << endl;
+	
+	/* loading shader programs */
+	if(DEBUG) cout << "Main | initializing shaders ... ";
+	programID = LoadShaders("TransformVertexShader.vertexshader",
+		"TextureFragmentShader.fragmentshader");
+	if(DEBUG) cout << "done" << endl;
+	
+	if(DEBUG) cout << "Main | initializing matricies ... ";
+	ProjectionMatrix = glm::perspective(45.0f, 4.0f/3.0f, 0.1f, 100.0f);
+	ViewMatrix = glm::lookAt(
+		glm::vec3(4,3,-3),
+		glm::vec3(0,0,0),
+		glm::vec3(0,1,0));
+	ModelMatrix = glm::mat4(1.0f);
+	MatrixID = glGetUniformLocation(programID, "MVP");
+	if(DEBUG) cout << "done" << endl;
 
 	//createShaderProgram();
-	if(debug) cout << "initializing done" << endl;
+	if(DEBUG) cout << "Main | initializing done" << endl;
 }
 
 /* what happens before each frame */
@@ -49,25 +82,25 @@ void onIdle() {
 	glutPostRedisplay();
 }
 
+/* how should everything be displayed */
 void onDisplay() {
 	/* reset colors of background buffer */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// TODO : draw graphical objects here
 
+	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+	/* call drawing functions for each object */
 	for(int i = 0; i < gObjects.size(); i++) {
-		gObjects.at(i).draw();
+		gObjects.at(i)->draw();
 	}
-	/*for(GraphicObject obj : gObjects) {
-		obj.draw();
-	}*/
 
 	/* swap forground and background buffers */
 	glutSwapBuffers();
 }
 
 int main(int argc, char **argv) {
-	if(debug) cout << "starting merry-go-around" << endl;
+	if(DEBUG) cout << "starting merry-go-around" << endl;
 	
 	/* initialize glut here */
 	glutInit(&argc, argv);
