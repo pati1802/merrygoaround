@@ -26,7 +26,7 @@ using namespace std;
  */
 vector<GraphicObject*> gObjects;
 
-GLuint programID;
+Shader *shader;
 GLuint MatrixID;
 
 glm::mat4 ProjectionMatrix;
@@ -56,8 +56,11 @@ int initialize() {
 	
 	/* loading shader programs */
 	if(DEBUG) cout << "Main | initializing shaders ... ";
-	programID = LoadShaders("TransformVertexShader.vertexshader",
-		"TextureFragmentShader.fragmentshader");
+	//programID = LoadShaders("shader/TransformVertexShader.vertexshader",
+	//	"shader/ColorFragmentShader.fragmentshader");
+	shader = new Shader("shader/TestShader.vs",
+		"shader/ColorFragmentShader.fs");
+	shader->createShaderProgram();
 	if(DEBUG) cout << "done" << endl;
 	
 	if(DEBUG) cout << "Main | initializing matricies ... ";
@@ -67,7 +70,7 @@ int initialize() {
 		glm::vec3(0,0,0),
 		glm::vec3(0,1,0));
 	ModelMatrix = glm::mat4(1.0f);
-	MatrixID = glGetUniformLocation(programID, "MVP");
+	MatrixID = glGetUniformLocation(shader->getShaderProgram(), "MVP");
 	if(DEBUG) cout << "done" << endl;
 
 	//createShaderProgram();
