@@ -14,6 +14,7 @@
 
 #include "GraphicObject.hpp"
 #include "Shader.hpp"
+#include "LoadTexture.h" 
 
 #ifndef DEBUG
 #define DEBUG true
@@ -26,6 +27,7 @@ using namespace std;
  */
 vector<GraphicObject*> gObjects;
 
+GLuint ShaderProgram;
 Shader *shader;
 GLuint MatrixID;
 
@@ -33,11 +35,24 @@ glm::mat4 ProjectionMatrix;
 glm::mat4 ViewMatrix;
 glm::mat4 ModelMatrix;
 
+GLuint TextureBottom;
+GLuint TextureBar;
+GLuint TextureTop;
+GLuint TextureCube;
+GLuint TextureBillboard;
+
 /**
  * Function to initialize the open gl program
  */
 int initialize() {
 	if(DEBUG) cout << "Main | initializing ..." << endl;
+	
+	if(DEBUG) cout << "Main | loading textures space ... ";  
+	TextureBottom = LoadTexture("objects/bottom.bmp");
+	TextureBar = LoadTexture("objects/bar.bmp");
+	TextureTop = LoadTexture("objects/top.bmp");
+	TextureCube = LoadTexture("objects/cube.bmp");
+	if(DEBUG) cout << "done" << endl;
 
 	if(DEBUG) cout << "Main | clearing color space ... ";
 	glClearColor(0.0, 0.0, 0.0, 0.0); // set color to black (RGBA)
@@ -52,6 +67,7 @@ int initialize() {
 	/* loading objects from .obj files to program */
 	if(DEBUG) cout << "Main | start loading objects ... ";
 	gObjects.push_back(new GraphicObject("obj/cube.obj"));
+	gObjects.push_back(new GraphicObject("obj/flames.obj"));
 	if(DEBUG) cout << "Main | done loading objects" << endl;
 	
 	/* loading shader programs */
@@ -92,10 +108,17 @@ void onDisplay() {
 
 	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	
+	/* Billboard */
+	mat4 inverseView = glm::inverse(ViewMatrixGLM);
+	vec3 camPos = glm::vec3(inverseView[3].x, 0.0f, inverseView[3].z);
+	vec3 camUp = glm::vec3(ViewMatrixGLM[0].y, ViewMatrixGLM[1].y, ViewMatrixGLM[2].y);
+	ModelMatrix = getBillboardTransform(vec3(0.0f, -8.0f, 0.0f), camPos, camUp);
+	ModelMatrix = glm::scale(ModelMatrixTemp, glm::vec3(2.0f));
 
 	/* call drawing functions for each object */
 	for(int i = 0; i < gObjects.size(); i++) {
-		gObjects.at(i)->draw();
+		gObjects.at(i)->draw(TextureBar,ShaderProgram); //TODO: add correct texture for each object
 	}
 
 	/* swap forground and background buffers */

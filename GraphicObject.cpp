@@ -40,9 +40,15 @@ GraphicObject::~GraphicObject() {}
 /**
  * used to draw the graphical object on the screen
  */
-void GraphicObject::draw() {
+void GraphicObject::draw(GLuint texture, GLuint ShaderProgram) {
 	//glEnableVertexAttribArray();
 	// TODO : add drawing code
+	
+	glActiveTexture(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	int texture_location = glGetUniformLocation(ShaderProgram, "myTextureSampler");
+	glUniform1i(texture_location, 0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
@@ -70,4 +76,12 @@ void GraphicObject::draw() {
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+
+	glActiveTexture(GL_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
 }

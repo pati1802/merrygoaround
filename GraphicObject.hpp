@@ -29,7 +29,7 @@ class GraphicObject {
 		virtual ~GraphicObject();
 
 		/* functions to draw the grafical object */
-		void draw();
+		void draw(GLuint texture, GLuint ShaderProgram);
 };
 
 #endif
